@@ -8,7 +8,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>3D Book Collections</title>
         <meta property="og:description" content="Explore your books in 3D!" />
-        <meta property="og:image" content="/ogp.png" />
+        <meta property="og:image" content="https://3d-book-collections-krot.vercel.app/ogp.png" />
       </Head>
       <Component {...pageProps} />
     </>
