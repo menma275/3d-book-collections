@@ -1,18 +1,14 @@
 import { useEffect, useState } from "react";
-import { useAtom } from "jotai";
-import { collectionAtom } from "../state/atom";
-import { getCollections } from "../utils/collection";
 import { getBookInfos } from "../utils/book";
-import { extractIsbn } from "../utils/extractIsbn";
+import { staticData } from "../utils/staticData";
 import type { BookInfo, AdditionalBookInfo, MergedBookInfo } from "../types/types";
 
 const CACHE_KEY = "books";
 const CACHE_DURATION = 60 * 60 * 1000;
 
-const useManageBooks = () => {
+const useStaticBooks = () => {
   const [books, setBooks] = useState<MergedBookInfo[] | null>(null);
 
-  // キャッシュ有効フラグ
   const [useCache, setUseCache] = useState(false);
 
   useEffect(() => {
@@ -30,25 +26,14 @@ const useManageBooks = () => {
     }
   }, [setBooks]);
 
-  // 1. コレクション情報の取得
-  const [collections, setCollections] = useAtom(collectionAtom);
-  useEffect(() => {
-    if (useCache) return; // キャッシュ使用時はAPI呼ばない
-    getCollections().then(setCollections);
-  }, [setCollections, useCache]);
-
-  // 2. コレクションからISBN抽出
   const [bookInfos, setBookInfos] = useState<BookInfo[]>([]);
   useEffect(() => {
     if (useCache) return;
-    const infos = extractIsbn(collections);
+    const infos = staticData();
     setBookInfos(infos);
-  }, [collections, useCache]);
+  }, [useCache]);
 
-  // 3. 楽天APIから追加情報取得
-  const [additionalBookInfos, setAdditionalBookInfos] = useState<
-    AdditionalBookInfo[]
-  >([]);
+  const [additionalBookInfos, setAdditionalBookInfos] = useState<AdditionalBookInfo[]>([]);
   useEffect(() => {
     if (useCache) return;
     if (bookInfos.length === 0) return;
@@ -78,4 +63,4 @@ const useManageBooks = () => {
   return { books };
 };
 
-export default useManageBooks;
+export default useStaticBooks;

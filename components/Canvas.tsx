@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrthographicCamera } from "@react-three/drei";
 import { useAtom } from "jotai";
-import { bookAtom, selectedBookAtom } from "../state/atom";
+import { selectedBookAtom } from "../state/atom";
 import type { BookInfo, MergedBookInfo } from "../types/types";
 import CustomControls from "./CustomControls";
 
@@ -120,13 +120,12 @@ function Book({
   );
 }
 
-export default function MainCanvas({ isLargeSpace }: { isLargeSpace: boolean }): React.ReactElement {
-  const [books] = useAtom(bookAtom);
+export default function MainCanvas({ books, isLargeSpace }: { books: MergedBookInfo[] | null, isLargeSpace: boolean }): React.ReactElement {
   return (
     <Canvas>
       <color attach="background" args={["#eee"]} />
       <OrthographicCamera makeDefault position={[5, 5, 5]} zoom={120} />
-      {(books) &&
+      {books &&
         books.map((book: BookInfo, index: number) => (
           <Book
             book={book}

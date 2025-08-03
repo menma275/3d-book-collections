@@ -30,13 +30,13 @@ export type BookFetch = {
 
 export type BookInfo = {
   isbn: string;
-  category: string;
+  // category: string;
   size: {
     width: number;
     height: number;
     depth: number;
   };
-  tags: string;
+  // tags: string;
 };
 
 export type AdditionalBookInfo = BookInfo & {

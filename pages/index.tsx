@@ -3,14 +3,17 @@ import { useAtom } from "jotai";
 import { selectedBookAtom } from "../state/atom";
 import type { MergedBookInfo } from "../types/types";
 import MainCanvas from "../components/Canvas";
-import useManageBooks from "../utils/manageBooks";
+// import useManageBooks from "../utils/manageBooks";
+import useStaticBooks from "../utils/staticBooks";
 
 function App() {
   const [selectedBook] = useAtom(selectedBookAtom);
   const [selectedBookInfo, setSelectedBookInfo] = useState<MergedBookInfo | null>(null);
 
   const [isLargeSpace, setIsLargeSpace] = useState<boolean>(false);
-  const { books } = useManageBooks();
+
+  const { books } = useStaticBooks();
+  // const { books } = useManageBooks();
 
   useEffect(() => {
     if (!books) return;
@@ -35,10 +38,10 @@ function App() {
           <span className={`${isLargeSpace ? "text-neutral-300" : "text-neutral-700"}`}>Small</span>
         </button>
       </div>
-      {books.length === 0 && (
+      {books && books.length === 0 && (
         <h1 className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 text-neutral-900 text-lg font-bold">Loading...</h1>
       )}
-      <MainCanvas isLargeSpace={isLargeSpace} />
+      <MainCanvas books={books} isLargeSpace={isLargeSpace} />
     </div >
   );
 }
