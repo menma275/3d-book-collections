@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrthographicCamera } from "@react-three/drei";
 import { useAtom } from "jotai";
 import { selectedBookAtom } from "../state/atom";
@@ -16,6 +16,14 @@ function Book({
   position: [number, number, number];
   isLargeSpace: boolean
 }): React.ReactElement {
+  const [width, setWidth] = useState<number>(0);
+  const [height, setHeight] = useState<number>(0);
+  const [depth, setDepth] = useState<number>(0);
+  const [frontWidth, setFrontWidth] = useState<number>(0);
+  const [forntHeight, setForntHeight] = useState<number>(0);
+  const [spineWidth, setSpineWidth] = useState<number>(0);
+  const [spineHeight, setSpineHeight] = useState<number>(0);
+
   // Front Cover Texture
   const frontProxyURL = `/api/proxy?url=${encodeURIComponent(book?.largeImageUrl || "")}`;
   const [frontTexture, setFrontTexture] = useState<THREE.Texture | null>(null);
@@ -27,6 +35,8 @@ function Book({
     loader.load(
       frontProxyURL,
       (texture) => {
+        setFrontWidth(texture.image.width);
+        setForntHeight(texture.image.height);
         setFrontTexture(texture);
         setFrontError(false);
       },
@@ -51,6 +61,8 @@ function Book({
     loader.load(
       spineProxyURL,
       (texture) => {
+        setSpineWidth(texture.image.width);
+        setSpineHeight(texture.image.height);
         setSpineTexture(texture);
         setSpineError(false);
       },
@@ -86,55 +98,59 @@ function Book({
     new THREE.MeshBasicMaterial({ color: "white" }),
   ];
 
-  let width, height, depth;
+  useEffect(() => {
+    setWidth(spineHeight / forntHeight * frontWidth / 500);
+    setHeight(spineHeight / 500);
+    setDepth(spineWidth / 500);
+  }, [spineHeight, forntHeight, frontWidth, spineWidth]);
 
-  switch (book.size) {
-    case 1: // 単行本
-      width = 1.28;
-      height = 1.82;
-      depth = 0.25; // 約20–30mm
-      break;
-    case 2: // 文庫
-      width = 1.05;
-      height = 1.48;
-      depth = 0.20; // 約15–25mm
-      break;
-    case 3: // 新書
-      width = 1.07;
-      height = 1.73;
-      depth = 0.15; // 約20–25mm
-      break;
-    case 4: // 全集・双書
-      width = 1.28;
-      height = 1.88;
-      depth = 0.35; // 約30mm以上
-      break;
-    case 5: // 事・辞典
-      width = 1.82;
-      height = 2.57;
-      depth = 0.35; // 約25–40mm
-      break;
-    case 6: // 図鑑
-      width = 1.82;
-      height = 2.57;
-      depth = 0.35; // 約25–40mm
-      break;
-    case 7: // 絵本
-      width = 2.10;
-      height = 2.97;
-      depth = 0.12; // 約10–15mm
-      break;
-    case 8: // コミック
-      width = 1.28;
-      height = 1.82;
-      depth = 0.22; // 約20–25mm
-      break;
-    default: // その他
-      width = 1.05;
-      height = 1.48;
-      depth = 0.20; // 約15–25mm
-      break;
-  }
+  // switch (book.size) {
+  //   case 1: // 単行本
+  //     width = 1.28;
+  //     height = 1.82;
+  //     depth = 0.25; // 約20–30mm
+  //     break;
+  //   case 2: // 文庫
+  //     width = 1.05;
+  //     height = 1.48;
+  //     depth = 0.20; // 約15–25mm
+  //     break;
+  //   case 3: // 新書
+  //     width = 1.07;
+  //     height = 1.73;
+  //     depth = 0.15; // 約20–25mm
+  //     break;
+  //   case 4: // 全集・双書
+  //     width = 1.28;
+  //     height = 1.88;
+  //     depth = 0.35; // 約30mm以上
+  //     break;
+  //   case 5: // 事・辞典
+  //     width = 1.82;
+  //     height = 2.57;
+  //     depth = 0.35; // 約25–40mm
+  //     break;
+  //   case 6: // 図鑑
+  //     width = 1.82;
+  //     height = 2.57;
+  //     depth = 0.35; // 約25–40mm
+  //     break;
+  //   case 7: // 絵本
+  //     width = 2.10;
+  //     height = 2.97;
+  //     depth = 0.12; // 約10–15mm
+  //     break;
+  //   case 8: // コミック
+  //     width = 1.28;
+  //     height = 1.82;
+  //     depth = 0.22; // 約20–25mm
+  //     break;
+  //   default: // その他
+  //     width = 1.05;
+  //     height = 1.48;
+  //     depth = 0.20; // 約15–25mm
+  //     break;
+  // }
 
   // Handle Position
   const ref = useRef<THREE.Mesh>(null);
