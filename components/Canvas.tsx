@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrthographicCamera } from "@react-three/drei";
 import { useAtom } from "jotai";
 import { selectedBookAtom } from "../state/atom";
