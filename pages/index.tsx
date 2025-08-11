@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { selectedBookAtom } from "../state/atom";
 import type { MergedBookInfo } from "../types/types";
 import MainCanvas from "../components/Canvas";
-import useManageBooks from "../utils/manageBooks";
+// import useManageBooks from "../utils/manageBooks";
 import useStaticBooks from "../utils/staticBooks";
 
 function App() {
