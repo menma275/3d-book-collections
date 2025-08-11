@@ -23,20 +23,21 @@ export type BookFetch = {
   keyword: string;
   format: string;
   applicationId: string;
-  formatVersion: number;
-  outOfStockFlag: number;
-  orFlag: number;
+  formatVersion: string;
+  outOfStockFlag: string;
+  orFlag: string;
 }
 
 export type BookInfo = {
   isbn: string;
-  // category: string;
-  size: {
+  size?: number;
+  category?: string;
+  dimensions?: {
     width: number;
     height: number;
     depth: number;
   };
-  // tags: string;
+  tags?: string;
 };
 
 export type AdditionalBookInfo = BookInfo & {
@@ -49,6 +50,7 @@ export type AdditionalBookInfo = BookInfo & {
   discountPrice: number;
   discountRate: number;
   hardware: string;
+  isbn: string;
   itemCaption: string;
   itemPrice: number;
   itemUrl: string;
@@ -66,6 +68,6 @@ export type AdditionalBookInfo = BookInfo & {
   salesDate: string;
   smallImageUrl: string;
   title: string;
-}
+};
 
 export type MergedBookInfo = BookInfo & Partial<AdditionalBookInfo>;

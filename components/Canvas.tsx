@@ -16,7 +16,6 @@ function Book({
   position: [number, number, number];
   isLargeSpace: boolean
 }): React.ReactElement {
-
   // Front Cover Texture
   const frontProxyURL = `/api/proxy?url=${encodeURIComponent(book?.largeImageUrl || "")}`;
   const [frontTexture, setFrontTexture] = useState<THREE.Texture | null>(null);
@@ -44,6 +43,7 @@ function Book({
   const spineProxyURL = `/api/proxy?url=${encodeURIComponent(spineURL)}`;
   const [spineTexture, setSpineTexture] = useState<THREE.Texture | null>(null);
   const [spineError, setSpineError] = useState<boolean>(false);
+
   useEffect(() => {
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");
@@ -62,7 +62,7 @@ function Book({
     );
   }, [spineProxyURL]);
 
-  // Handel Hovered Book
+  // Handle Hovered Book
   const [selectedBook, setSelectedBook] = useAtom(selectedBookAtom);
   const handlePointerEnter = () => {
     setSelectedBook(book.isbn);
@@ -86,11 +86,55 @@ function Book({
     new THREE.MeshBasicMaterial({ color: "white" }),
   ];
 
-  // Handle Book Size
-  const useDefault = !book.size || [book.size.width, book.size.height, book.size.depth].some((val) => val == null || isNaN(val));
-  const width = useDefault ? 0.75 : book.size.width! / 100;
-  const height = useDefault ? 1 : book.size.height! / 100;
-  const depth = useDefault ? 0.1 : book.size.depth! / 100;
+  let width, height, depth;
+
+  switch (book.size) {
+    case 1: // 単行本
+      width = 1.28;
+      height = 1.82;
+      depth = 0.25; // 約20–30mm
+      break;
+    case 2: // 文庫
+      width = 1.05;
+      height = 1.48;
+      depth = 0.20; // 約15–25mm
+      break;
+    case 3: // 新書
+      width = 1.07;
+      height = 1.73;
+      depth = 0.15; // 約20–25mm
+      break;
+    case 4: // 全集・双書
+      width = 1.28;
+      height = 1.88;
+      depth = 0.35; // 約30mm以上
+      break;
+    case 5: // 事・辞典
+      width = 1.82;
+      height = 2.57;
+      depth = 0.35; // 約25–40mm
+      break;
+    case 6: // 図鑑
+      width = 1.82;
+      height = 2.57;
+      depth = 0.35; // 約25–40mm
+      break;
+    case 7: // 絵本
+      width = 2.10;
+      height = 2.97;
+      depth = 0.12; // 約10–15mm
+      break;
+    case 8: // コミック
+      width = 1.28;
+      height = 1.82;
+      depth = 0.22; // 約20–25mm
+      break;
+    default: // その他
+      width = 1.05;
+      height = 1.48;
+      depth = 0.20; // 約15–25mm
+      break;
+  }
 
   // Handle Position
   const ref = useRef<THREE.Mesh>(null);

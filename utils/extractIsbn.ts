@@ -37,7 +37,7 @@ export function extractIsbn(collections: Collection[]): BookInfo[] {
     const bookInfo = {
       isbn: isbn,
       category: categories[index] || "",
-      size: {
+      dimensions: {
         width: parts?.[2] || NaN,
         height: parts?.[0] || NaN,
         depth: parts?.[1] || NaN,

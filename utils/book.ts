@@ -15,16 +15,11 @@ export async function getBookInfos(isbns: string[]): Promise<AdditionalBookInfo[
         keyword: chunk.join(' '),
         format: 'json',
         applicationId: appId,
-        formatVersion: 2,
-        outOfStockFlag: 1,
-        orFlag: 1
+        formatVersion: "2",
+        outOfStockFlag: "1",
+        orFlag: "1"
       }
-      const queryParams = new URLSearchParams({
-        ...params,
-        formatVersion: String(params.formatVersion),
-        outOfStockFlag: String(params.outOfStockFlag),
-        orFlag: String(params.orFlag),
-      });
+      const queryParams = new URLSearchParams(params);
       const url = `${baseUrl}?${queryParams.toString()}`;
 
       const response = await fetch(url);
@@ -33,6 +28,7 @@ export async function getBookInfos(isbns: string[]): Promise<AdditionalBookInfo[
       }
 
       const data = await response.json();
+      console.log(`Fetched data for chunk ${index}:`, data);
 
       const items = data.Items as AdditionalBookInfo[];
       return items;
@@ -40,6 +36,8 @@ export async function getBookInfos(isbns: string[]): Promise<AdditionalBookInfo[
 
   )
   const results = await Promise.all(fetchIsbns);
+
+  console.log("Fetched book infos:", results);
 
   return results.flat();
 }

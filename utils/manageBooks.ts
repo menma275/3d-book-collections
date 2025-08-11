@@ -11,8 +11,6 @@ const CACHE_DURATION = 60 * 60 * 1000;
 
 const useManageBooks = () => {
   const [books, setBooks] = useState<MergedBookInfo[] | null>(null);
-
-  // キャッシュ有効フラグ
   const [useCache, setUseCache] = useState(false);
 
   useEffect(() => {
@@ -37,7 +35,7 @@ const useManageBooks = () => {
     getCollections().then(setCollections);
   }, [setCollections, useCache]);
 
-  // 2. コレクションからISBN抽出
+  // 2. コレクションからデータ抽出
   const [bookInfos, setBookInfos] = useState<BookInfo[]>([]);
   useEffect(() => {
     if (useCache) return;

@@ -3,7 +3,7 @@ import { useAtom } from "jotai";
 import { selectedBookAtom } from "../state/atom";
 import type { MergedBookInfo } from "../types/types";
 import MainCanvas from "../components/Canvas";
-// import useManageBooks from "../utils/manageBooks";
+import useManageBooks from "../utils/manageBooks";
 import useStaticBooks from "../utils/staticBooks";
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
   return (
     <div className="w-full h-dvh fixed">
       {selectedBookInfo && (
-        <div className="fixed z-10 top-0 left-0 p-12 w-fit max-w-sm h-fit max-h-dvh overflow-y-hidden text-neutral-700 text-sm flex gap-2 flex-col cursor-default
+        <div className="pointer-events-none fixed z-10 top-0 left-0 p-12 w-fit max-w-sm h-fit max-h-dvh overflow-y-hidden text-neutral-700 text-sm flex gap-2 flex-col cursor-default
           ">
           <h1 className="font-bold">{selectedBookInfo.title}</h1>
           <p className="text-xs">{selectedBookInfo.author}</p>
