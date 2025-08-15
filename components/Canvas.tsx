@@ -3,18 +3,16 @@ import { useRef, useEffect, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrthographicCamera } from "@react-three/drei";
 import { useAtom } from "jotai";
-import { selectedBookAtom } from "../state/atom";
+import { selectedBookAtom, isLargeSpaceAtom } from "../state/atom";
 import type { BookInfo, MergedBookInfo } from "../types/types";
 import CustomControls from "./CustomControls";
 
 function Book({
   book,
   position,
-  isLargeSpace
 }: {
   book: MergedBookInfo;
   position: [number, number, number];
-  isLargeSpace: boolean
 }): React.ReactElement {
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
@@ -23,11 +21,13 @@ function Book({
   const [forntHeight, setForntHeight] = useState<number>(0);
   const [spineWidth, setSpineWidth] = useState<number>(0);
   const [spineHeight, setSpineHeight] = useState<number>(0);
+  const [isLargeSpace] = useAtom(isLargeSpaceAtom);
 
   // Front Cover Texture
   const frontProxyURL = `/api/proxy?url=${encodeURIComponent(book?.largeImageUrl || "")}`;
   const [frontTexture, setFrontTexture] = useState<THREE.Texture | null>(null);
   const [frontError, setFrontError] = useState<boolean>(false);
+
   useEffect(() => {
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");
@@ -104,54 +104,6 @@ function Book({
     setDepth(spineWidth / 500);
   }, [spineHeight, forntHeight, frontWidth, spineWidth]);
 
-  // switch (book.size) {
-  //   case 1: // 単行本
-  //     width = 1.28;
-  //     height = 1.82;
-  //     depth = 0.25; // 約20–30mm
-  //     break;
-  //   case 2: // 文庫
-  //     width = 1.05;
-  //     height = 1.48;
-  //     depth = 0.20; // 約15–25mm
-  //     break;
-  //   case 3: // 新書
-  //     width = 1.07;
-  //     height = 1.73;
-  //     depth = 0.15; // 約20–25mm
-  //     break;
-  //   case 4: // 全集・双書
-  //     width = 1.28;
-  //     height = 1.88;
-  //     depth = 0.35; // 約30mm以上
-  //     break;
-  //   case 5: // 事・辞典
-  //     width = 1.82;
-  //     height = 2.57;
-  //     depth = 0.35; // 約25–40mm
-  //     break;
-  //   case 6: // 図鑑
-  //     width = 1.82;
-  //     height = 2.57;
-  //     depth = 0.35; // 約25–40mm
-  //     break;
-  //   case 7: // 絵本
-  //     width = 2.10;
-  //     height = 2.97;
-  //     depth = 0.12; // 約10–15mm
-  //     break;
-  //   case 8: // コミック
-  //     width = 1.28;
-  //     height = 1.82;
-  //     depth = 0.22; // 約20–25mm
-  //     break;
-  //   default: // その他
-  //     width = 1.05;
-  //     height = 1.48;
-  //     depth = 0.20; // 約15–25mm
-  //     break;
-  // }
-
   // Handle Position
   const ref = useRef<THREE.Mesh>(null);
   const defaultPosition = [position[0] - width / 2, position[1] + height / 2, position[2]];
@@ -170,8 +122,8 @@ function Book({
   return (
     <mesh
       ref={ref}
-      onPointerEnter={handlePointerEnter}
-      onPointerLeave={handlePointerLeave}
+      onPointerOver={handlePointerEnter}
+      onPointerOut={handlePointerLeave}
       material={material}
       position={[position[0] + width / 2, position[1] + height / 2, position[2]]}
     >
@@ -180,7 +132,7 @@ function Book({
   );
 }
 
-export default function MainCanvas({ books, isLargeSpace }: { books: MergedBookInfo[] | null, isLargeSpace: boolean }): React.ReactElement {
+export default function MainCanvas({ books }: { books: MergedBookInfo[] | null }): React.ReactElement {
   return (
     <Canvas>
       <color attach="background" args={["#eee"]} />
@@ -189,9 +141,8 @@ export default function MainCanvas({ books, isLargeSpace }: { books: MergedBookI
         books.map((book: BookInfo, index: number) => (
           <Book
             book={book}
-            position={[2, 0, (books.length * 0.5) / 2 - index * 0.5]}
+            position={[2, 0, books.length * 0.25 - index * 0.5]}
             key={index}
-            isLargeSpace={isLargeSpace}
           />
         )
         )}
